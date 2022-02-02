@@ -8,7 +8,7 @@ In this paper, we propose a three-component pipline that allows you to train a a
 
 The demos and introduction are presented in our [short instroduction video](https://youtu.be/8XQ5ZyYRLQM) and [full presentation video](https://youtu.be/RgNwB_pJ7Cw). 
 
-More demos will be presented in [my personal website](www.knutchen.com) (now under construction)
+More demos will be presented in [my personal website](https://www.knutchen.com) (now under construction)
 
 ![Model Arch](fig/arch.png)
 

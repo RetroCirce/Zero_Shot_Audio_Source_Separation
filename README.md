@@ -75,14 +75,14 @@ classes_num = 527
 
 ### Train and Evaluation
 
-## Train the sound event detection system ST-SED/HTS-AT
+#### Train the sound event detection system ST-SED/HTS-AT
 In thses monthes, we further integrated this system ST-SED into an independent repository, and evaluteed it on more datasets, improved it a lot and achieved better performance. 
 
 You can follow [this repo](https://github.com/RetroCirce/HTS-Audio-Transformer) to train and evalute the sound event detection system ST-SED (or a more relevant name HTS-AT), the configuation file for training the model for this separation task should be [htsat_config.py](htsat_config.py).
 
 For this separation task, if you want to save time, you can also download [the checkpoint](https://drive.google.com/drive/folders/1RouwHsGsMs8n3l_jF8XifWtbPzur_YQS?usp=sharing) directly.
 
-## Train, Evaluate and Inference the Seapration Model
+#### Train, Evaluate and Inference the Seapration Model
 
 All scripts is run by main.py:
 ```
@@ -100,7 +100,7 @@ CUDA_VISIBLE_DEVICES=1,2,3,4 python main.py inference
 Where you can separate any given source from the track. You need to set the value of "inference_file" and "inference_query" in *config.py*. Just check the comment and get it started. 
 
 
-### Model Checkpoints:
+#### Model Checkpoints:
 
 We provide the model checkpoints in this [link](https://drive.google.com/drive/folders/1RouwHsGsMs8n3l_jF8XifWtbPzur_YQS?usp=sharing). Feel free to download and test it.
 

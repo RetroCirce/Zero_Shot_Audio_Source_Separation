@@ -76,7 +76,7 @@ classes_num = 527
 ### Train and Evaluation
 
 #### Train the sound event detection system ST-SED/HTS-AT
-In thses monthes, we further integrated this system ST-SED into an independent repository, and evaluteed it on more datasets, improved it a lot and achieved better performance. 
+We further integrated this system ST-SED into an independent repository, and evaluteed it on more datasets, improved it a lot and achieved better performance. 
 
 You can follow [this repo](https://github.com/RetroCirce/HTS-Audio-Transformer) to train and evalute the sound event detection system ST-SED (or a more relevant name HTS-AT), the configuation file for training the model for this separation task should be [htsat_config.py](htsat_config.py).
 

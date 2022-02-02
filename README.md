@@ -59,8 +59,11 @@ python main.py musdb_process
 ### Set the Configuration File: config.py
 
 The script *config.py* contains all configurations you need to assign to run your code. 
+
 Please read the introduction comments in the file and change your settings.
+
 For the most important part:
+
 If you want to train/test your model on AudioSet, you need to set:
 ```
 dataset_path = "your processed audioset folder"

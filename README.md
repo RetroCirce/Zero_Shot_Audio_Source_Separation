@@ -95,9 +95,9 @@ We recommend using at least 4 GPU cards with above 20GB memories per card. In ou
 
 We provide a quick **inference** interface by:
 ```
-CUDA_VISIBLE_DEVICES=1,2,3,4 python main.py inference
+CUDA_VISIBLE_DEVICES=1 python main.py inference
 ```
-Where you can separate any given source from the track. You need to set the value of "inference_file" and "inference_query" in *config.py*. Just check the comment and get it started. 
+Where you can separate any given source from the track. You need to set the value of "inference_file" and "inference_query" in *config.py*. Just check the comment and get it started. And for the inference, we recommend to use only one card (because it is already enough).
 
 
 #### Model Checkpoints:

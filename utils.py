@@ -561,8 +561,19 @@ def wiener(
     # scale estimates up again
     y = y * max_abs
     return y
-    
-    
+
+def split_nparray_with_overlap(array, array_size, overlap_size):
+    result = []
+    element_size = int(len(array) / array_size)
+    for i in range(array_size):
+        offset = int(i * element_size)
+        last_loop = i == array_size
+        chunk = array[offset : offset + element_size + (0 if last_loop else overlap_size)]
+        chunk = chunk.copy()
+        chunk.resize(element_size + overlap_size, refcheck = False)
+        result.append(chunk)
+
+    return np.array(result)
 
 
 

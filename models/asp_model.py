@@ -13,9 +13,10 @@ import math
 import bisect
 import pickle
 import soundfile as sf
+import subprocess
 
 import noisereduce as nr
-from utils import get_segment_bgn_end_samples, np_to_pytorch, get_mix_data, evaluate_sdr, wiener
+from utils import get_segment_bgn_end_samples, np_to_pytorch, get_mix_data, evaluate_sdr, wiener, split_nparray_with_overlap
 from losses import get_loss_func
 
 import torch
@@ -765,12 +766,13 @@ class SeparatorModel(pl.LightningModule):
         n_samples = int(batch.shape[-1] / segment_len) * segment_len
         # resize the batch
         batch = batch[:, :n_samples]
-        mixture = np.array(np.split(batch[0], n_samples // segment_len))
-        assert mixture.shape[-1] == segment_len, "split error"
+        overlap_size = int(self.config.overlap_rate * segment_len)
+        mixture = split_nparray_with_overlap(batch[0], n_samples // segment_len, overlap_size)
+        assert mixture.shape[-1] == segment_len + overlap_size, "split error"
         # get the latent embedding query
         for i, dickey in enumerate(self.target_keys):
-            sources[dickey] = np.array(
-                np.split(batch[i + 1, :n_samples], n_samples // segment_len)
+            sources[dickey] = split_nparray_with_overlap(
+                batch[i + 1, :n_samples], n_samples // segment_len, overlap_size
             )
             at_sources[dickey] = []
             sdr[dickey] = []
@@ -855,7 +857,8 @@ class SeparatorModel(pl.LightningModule):
                 if len(temp_sdr) >= 1:
                     sdr[dickey] = [d[0] for d in temp_sdr]
                     sdr[dickey] = np.median(sdr[dickey])
-                preds[dickey] = np.concatenate(preds[dickey], axis = 0)
+                if overlap_size == 0:
+                    preds[dickey] = np.concatenate(preds[dickey], axis = 0)
         else:
             for dickey in self.target_keys:
                 # sp if using wiener, else direct wav
@@ -873,7 +876,8 @@ class SeparatorModel(pl.LightningModule):
                 if len(temp_sdr) >= 1:
                     sdr[dickey] = [d[0] for d in temp_sdr]
                     sdr[dickey] = np.median(sdr[dickey])
-                preds[dickey] = np.concatenate(preds[dickey], axis = 0)
+                if overlap_size == 0:
+                    preds[dickey] = np.concatenate(preds[dickey], axis = 0)
         # output waveform
         if self.output_wav:
             filename = str(batch_idx) + "_mixture.wav"
@@ -882,7 +886,44 @@ class SeparatorModel(pl.LightningModule):
                 filename = str(batch_idx) + "_" + dickey + "_original.wav"
                 sf.write(os.path.join(self.config.wave_output_path, filename), batch[i + 1], self.config.sample_rate)
                 filename = str(batch_idx) + "_" + dickey + "_pred_(" + str(sdr[dickey]) + ").wav"
-                sf.write(os.path.join(self.config.wave_output_path, filename), preds[dickey], self.config.sample_rate)
+                if overlap_size > 0:
+                    args = ["ffmpeg", "-y", "-loglevel", "quiet"]
+
+                    filters = []
+                    files = []
+
+                    for j in range(len(preds[dickey])):
+                        file = os.path.join(self.config.wave_output_path, "chunk_{0}.wav".format(j))
+                        args.extend(["-i", file])
+                        files.append(file)
+
+                        sf.write(file, preds[dickey][j], self.config.sample_rate)
+
+                        if j < len(preds[dickey]) - 1:
+                            filter_cmd = "[" + ("a" if j != 0 else "") + "{0}][{1}]acrossfade=ns={2}:c1=tri:c2=tri".format(j, j+1, overlap_size)
+
+                            if j != len(preds[dickey]) - 2:
+                                filter_cmd += "[a{0}];".format(j + 1)
+
+                            filters.append(filter_cmd)
+
+
+                    args.extend([
+                        "-filter_complex",
+                        "".join(filters),
+                        "-y",
+                        os.path.join(self.config.wave_output_path, filename)
+                    ])
+
+                    try:
+                        subprocess.check_call(args)
+                    except:
+                        raise "ffmpeg does not exist. Install ffmpeg or set config.overlap_rate to zero."
+
+                    for file in files:
+                        os.remove(file)
+                else:
+                    sf.write(os.path.join(self.config.wave_output_path, filename), preds[dickey], self.config.sample_rate)
         self.print(batch_idx, sdr)
         return sdr
 

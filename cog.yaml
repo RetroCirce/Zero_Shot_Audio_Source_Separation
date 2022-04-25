@@ -1,0 +1,33 @@
+build:
+  gpu: true
+  python_version: "3.8"
+  system_packages:
+    - "libgl1-mesa-glx"
+    - "libglib2.0-0"
+    - "libsndfile1-dev"
+    - "ffmpeg"
+  python_packages:
+    - torch==1.9.0
+    - torchmetrics==0.6.0
+    - torchaudio==0.9.0
+    - torchcontrib==0.0.2
+    - torchlibrosa==0.0.9
+    - librosa==0.8.0
+    - pytorch_lightning==1.4.1
+    - museval==0.4.0
+    - noisereduce==2.0.0
+    - numba==0.55.1
+    - numpy==1.19.4
+    - scikit_learn==0.24.0
+    - scipy==1.6.0
+    - soundfile==0.10.3.post1
+    - tensorboard==2.2.0
+    - tqdm==4.55.0
+    - h5py==3.1.0
+    - musdb==0.4.0
+
+  # run:
+  #     - pip install open3d
+  # #   - "gdown --id 16VnMcF1KJYxN9QId6TClMsZRahHNMW5g"
+
+predict: "predict.py:Predictor"

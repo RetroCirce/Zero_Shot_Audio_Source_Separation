@@ -10,6 +10,8 @@ The demos and introduction are presented in our [short instroduction video](http
 
 More demos will be presented in [my personal website](https://www.knutchen.com) (now under construction)
 
+Chckout this interactive demo at Replicate <a href="https://replicate.com/retrocirce/zero_shot_audio_source_separation"><img src="https://replicate.com/retrocirce/zero_shot_audio_source_separation/badge"></a>
+
 ![Model Arch](fig/arch.png)
 
 

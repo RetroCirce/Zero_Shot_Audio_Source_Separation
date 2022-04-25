@@ -59,3 +59,4 @@ wa_model_path = "zs_wa.ckpt"
 # for inference
 inference_file = "/home/Research/ZS_ASP/data/pagenini.wav" # an audio file to separate
 inference_query = "/home/Research/ZS_ASP/data/query" # a folder containing all samples for obtaining the query
+overlap_rate = 0.5 # [0.0, 1.0), 0 to disabled, recommand 0.5 for 50% overlap. Overlap will increase computation time and improve result quality
